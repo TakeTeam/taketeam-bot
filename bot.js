@@ -99,7 +99,7 @@ bot.on("guildMemberRemove", member => {
 
 bot.on("guildCreate", guild => {
     console.log(`New guild added : ${guild.name}, owned by ${guild.owner.user} ${config.emojis.working}`).catch(console.error);
-}); // this code does so that when the bot joins a server it says to RSCodes
+}); // this code does so that when the bot joins a server it says to the hoster
 
 bot.on('message', message => { //start of command list
 
