@@ -1,3 +1,5 @@
+# work is postponed for a few days due to kdiacodes not having access to pc atm
+
 # TakeTeam-Bot
 
 TakeTeam-Bot is a bot written in javascript using [discord.js](https://github.com/hydrabolt/discord.js "discord.js library"). It has mostly mod and admin commands but also a whole lot of shitposting commands. If you need help then talk to Jimmy Rustler or Scorpion
