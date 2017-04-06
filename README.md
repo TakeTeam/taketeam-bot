@@ -1,4 +1,4 @@
-# work is postponed for a few days due to kdiacodes not having access to pc atm
+# work is postponed for a few days due to kdiacodes working on other bot projects and having exams in school
 
 # TakeTeam-Bot
 
