@@ -1,8 +1,11 @@
-const Discord = require("discord.js");
+const Discord = require('discord.js');
 const bot = new Discord.Client();
-const config = require("./config.json");
+const config = require('./config.json');
 const moment = require('moment');
 const randomcolor = require('randomcolor');
+const sql = require('sqlite');
+sql.open("./score.sqlite");
+
 
 process.on('uncaughtException', err =>{
     console.log('error: ' + err);//STOPS THE BOT FROM CRASHING
@@ -14,72 +17,17 @@ bot.on('ready',() => {
 	bot.user.setGame(config.setgame);
 });
 
-bot.on("guildMemberAdd", member =>{
-	bot.channels.get("227815924135231488").sendMessage(" ", {embed: {
-			color: 0x3447003,
-            		author: {
-				name: member.user.username,
-				icon_url: member.user.avatarURL
-			},
-			title: "welcome!",
-			description: member.user + " just joined",
-			timestamp: new Date(),
-			footer: {
-				icon_url: bot.user.avatarURL,
-				text: 'join message'
-			}
-	}}).catch(console.error);
-});
-
-bot.on("guildBanAdd", member =>{
-	bot.channels.get("227815924135231488").sendMessage(" ", {embed: {
-		color: 0xFF0000,
-		description: `:hammer: **User Banned:** ${member.user.username}#${member.user.discriminator} (${member.id})`
-	}}).catch(console.error);
-});
-
-bot.on("guildBanRemove", member =>{
-	bot.channels.get("227815924135231488").sendMessage(" ", {embed: {
-		color: 0x00FF00,
-		description: `:hammer: **User Unbanned:** ${member.user.username}#${member.user.discriminator} (${member.id})`
-	}}).catch(console.error);
-	banid.banids.push(member.id);
-});
-
-bot.on("guildMemberRemove", member => {
-	let guild = member.guild;
-	bot.channels.get("227815924135231488").sendMessage(" ", {embed: {
-		color: 0xFFFF00,
-		description: `${member.user.username}#${member.user.discriminator} just left the server`
-	}}).catch(console.error);
-});
-
-bot.on("guildCreate", guild => {
-	console.log(`New guild added : ${guild.name}, owned by ${guild.owner.user} ${config.emojis.working}`).catch(console.error);
-}); // this code does so that when the bot joins a server it says to RSCodes
-
 bot.on('message', message => { //start of command list
 
 	if(message.author.bot) return;
+	if (message.channel.type === "dm") return;
 	if(!message.content.startsWith(config.client.prefix))return;
-
 	let command = message.content.split(" ")[0];
 	command = command.slice(config.client.prefix.length);
-
 	let args = message.content.split(" ").slice(1);
 	var argresult = args.join(" ");
-
 	let guild = message.guild
-
-	if (command === "membercount") {
-		message.channel.sendMessage(`${message.guild.memberCount}`);
-	}
-	if (command === "serverinfo") {
-		message.channel.sendMessage(`${message.guild.name} | ${message.guild.memberCount}`);
-	}
-	if (command === "botservers") {
-		message.channel.sendMessage(bot.guilds.map(g => `${g.name} | ${g.memberCount}`));
-	}
+	
 	if (command === "setbotavatarurl") {
 		if (!message.author.id === config.creator.Jimmy) {
 			return message.reply("pleb ur not the bot creator").catch(console.error);
@@ -88,22 +36,6 @@ bot.on('message', message => { //start of command list
 		let text = args[0];
 		bot.user.setAvatarURL(text);
 		message.channel.sendMessage("my profile pic has been changed to " + text);
-	}
-	if (command === 'embed') {
-		let modRole = message.guild.roles.find("name", "Staff");
-		if(!message.member.roles.has(modRole.id) || !message.author.id === config.creator.Jimmy) {
-			return message.reply("pleb ur not staff").catch(console.error);
-		}
-		let noto = message.content.split(" ").slice(1).join(" ");
-		message.delete()
-		var embed = new Discord.RichEmbed();
-		embed.setColor(randomcolor())
-			.setDescription(noto)
-		message.channel.sendEmbed(
-			embed, {
-				disableEveryone: true
-			}
-		);
 	}
 	if (command === "setgame") {
 		if(!message.author.id === config.creator.Jimmy) {
@@ -116,13 +48,6 @@ bot.on('message', message => { //start of command list
 			return message.reply("pleb ur not Jimmy").catch(console.error);
 		}
 		bot.user.setStatus(argresult);
-	}
-	if (command === "date") {
-		var date = new Date();
-		var year = date.getFullYear();
-		var month = date.getMonth() + 1;
-		var day  = date.getDate();
-		message.channel.sendMessage("it's the **`" + day + "/" + month + "/" + year + "`** in Belgium");
 	}
 	if (command === "addrole") {
 		let modRole = message.guild.roles.find("name", "Staff");
